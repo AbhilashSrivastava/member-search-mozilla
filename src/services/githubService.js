@@ -1,11 +1,9 @@
 import axios from 'axios';
-import {
-  PUBLIC_API_URL
-} from '$env/static/public';
+const API_URL = 'https://api.github.com/orgs/mozilla/members?page=1'
 
 export const fetchMembers = async () => {
   try {
-    const response = await axios.get(PUBLIC_API_URL);
+    const response = await axios.get(API_URL);
     const usersImageData = await convertImageData(response.data)
     return {
       users: response.data,
