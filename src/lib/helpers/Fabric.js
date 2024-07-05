@@ -64,6 +64,11 @@ export class Fabric {
      * @param {any[]} allMembersImageData
      */
     renderAllMembers(allMembers, allMembersImageData) {
+        this.unmountBlurHandler()
+        this.unmountAnimation()
+        this.unmountClickHandlers()
+        this.unmountZoomPanHandler()
+        this.groupMemberList = []
         allMembers.forEach((member, index) => {
             const memberImageData = allMembersImageData.find(data => data.user === member.id)
             this.createMember(member, index, memberImageData, allMembers)
