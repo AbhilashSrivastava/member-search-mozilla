@@ -21,9 +21,11 @@
   <div class='title'>Shortlists {$shortlist.count > 0 ? '(' +$shortlist.count + ')' : ''}</div>
   <div class='shortlisted-wrapper'>
    {#if $shortlist.count > 0}
-    {#each shortlistData as shortlist, id(shortlist.id)}
-      <ShortlistedMember {shortlist}/>
-    {/each}
+    <div class='shortlist-list'>
+      {#each shortlistData as shortlist, id(shortlist.id)}
+        <ShortlistedMember {shortlist}/>
+      {/each}
+    </div>
    {:else}
     <div class='empty-shortlist'>No Shortlists Available</div>
     {/if}
@@ -31,6 +33,9 @@
 </div>
 
 <style>
+.shortlist-list{
+  padding-bottom: 100px;
+}
 .shortlisted-wrapper {
   margin: 0 12px;
   overflow-y: scroll;

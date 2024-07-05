@@ -465,8 +465,8 @@ export class Fabric {
          */
         function animate(canvas) {
           group.set('shadow', {
-              color: `rgba(255, 69, 0, ${Math.random() * 0.6 + 0.4})`,
-              blur: Math.random() * 100 + 10,
+              color: `rgba(255, 69, 0, ${Math.random() * 0.8 + 0.4})`,
+              blur: Math.random() * 200 + 10,
               offsetX: Math.random() * 20 - 10,
               offsetY: Math.random() * 20 - 10
           });
