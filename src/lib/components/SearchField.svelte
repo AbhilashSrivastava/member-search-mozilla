@@ -1,11 +1,15 @@
 <script>
   import tippy from '../helpers/Tippy'
   import FaInfoCircle from 'svelte-icons/fa/FaInfoCircle.svelte'
+
+  // onSearch function is received from Layout container
   export let onSearch;
-  let info1 = '1.ALT/OPTION + S - To export a member to shortlist.\n2.ALT/OPTION - To select all cards (in pan/zoom mode)\n3.CMD/Windows + Click - To open github profile of the member'
-  let info2 = ''
-  let info3 = ''
-  function handleInput(event) {
+  
+  // Content to be shown by our tooltip to educate our user about shortcures
+  let tootTipContent = '1.ALT/OPTION + S - To export a member to shortlist.\n2.ALT/OPTION - To select all cards (in pan/zoom mode)\n3.CMD/Windows + Click - To open github profile of the member'
+
+  
+  const handleInput = (event) => {
     onSearch(event.target.value);
   }
 </script>
@@ -14,7 +18,7 @@
       <div class='search-text'>Enter github name to search member</div>
       <input class='search-input' type="text" placeholder="Search members..." on:input={handleInput} />
     </div>
-    <div class='shortcuts-wrapper icon' use:tippy={{ content: info1, placement: 'right', theme: 'light' }}>
+    <div class='shortcuts-wrapper icon' use:tippy={{ content: tootTipContent, placement: 'right', theme: 'light' }}>
       <FaInfoCircle />
     </div>
   </div>

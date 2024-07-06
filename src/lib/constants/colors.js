@@ -1,3 +1,4 @@
+// Common used colors. This can eventually be moved to a theme class 
 const COLORS = {
     THEME_COLOR: '#151617',
     CANVAS_FILL_COLOR: 'FFEDD8',

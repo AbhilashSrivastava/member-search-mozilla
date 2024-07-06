@@ -1,20 +1,30 @@
 <script>
 	import Notification from './Notification.svelte';
-	import { Fabric } from './../helpers/Fabric.js';
+	import { Fabric } from '../helpers/Fabric.js';
 	import { onDestroy, onMount } from 'svelte';
  import members from '$lib/stores/members'
  import shortlist from '$lib/stores/shortlist'
  import config from '$lib/stores/config'
  import messaging from '../constants/messaging'
  
-
+ // triggerNotification is a function received from Page.svelte file. This is responsible to send notifications when user is shortlisted
  export let triggerNotification;
 
+ // Reference for out canvas container to be provided to fabric while instantiation.
  let canvasRef;
- let fabricInstance;
- let notificationTimeout = null;
- let message = ''
 
+ // This will hold our fabricInstance once initialized
+ let fabricInstance;
+
+
+ /**
+  * Responsible for exporting (adding to shortlist) our selected component.
+  * This takes the active object from the canvasInstance), validates for duplicate id,
+  * which we have given while creating the component (inside fabric). If no duplicates 
+  * found, it converts it into dataUrl and saves it in shortlist store.
+  * 
+  * Once done, it sends a notification
+ */
  const addToSidebarShortlist = (canvasInstance) =>  {
     if (!canvasInstance) return null;
 
@@ -45,6 +55,10 @@
 
  }
 
+ /**
+  * This binds our OPTION/ALT + S key to the add to shortcut functionality. We bind this 
+  * event onMound and remove it onDestroy
+ */
  const bindSaveToShortlistHandler = (event) => {
   if (event.altKey && event.code === 'KeyS') {
    event.preventDefault()
@@ -53,8 +67,11 @@
    }
   }
  }
- console.log($members.allMembers.length)
+
  onMount(() => {
+  /**
+   * OnMount, a new fabric instance is created using card widths and screen width as bellow.
+  */
   fabricInstance = new Fabric(
    canvasRef,
    {width: 300, height: 100},
@@ -63,18 +80,27 @@
    20,
    $config.isZoomPanEnabled
   )
-  
+
   document.addEventListener('keydown', (event) => bindSaveToShortlistHandler(event));
  })
 
  onDestroy(() => {
+  // OnDestroy, we call fabricInstance's unmount, which is a master unmount for all fabric canvas
+  // related bound events
   fabricInstance.unmount()
   document.removeEventListener('keydown', (event) => bindSaveToShortlistHandler(event));
  })
+ 
+
+// Observer responsible to re-render our canvas on the basis of changes
  $:{
+  // Check if fabricInstance exists and has been initialized
   if (fabricInstance?.getInstance()) {
+   // Clear the existing fabric instance
    fabricInstance?.clearInstance()
+   // Set the zoom and pan settings based on the config
    fabricInstance?.setZoomPan($config.isZoomPanEnabled)
+   // re-render all the members on the canvas using the filtered members and user's image data
    fabricInstance?.renderAllMembers($members.filteredMembers, $members.usersImageData)   
   }
  }

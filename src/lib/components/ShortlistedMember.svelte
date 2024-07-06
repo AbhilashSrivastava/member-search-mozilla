@@ -1,4 +1,5 @@
 <script>
+  // Shortlist data is received from the parent (SideBar Component)
   export let shortlist;
 </script>
 
