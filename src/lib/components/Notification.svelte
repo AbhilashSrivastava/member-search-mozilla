@@ -4,25 +4,31 @@
     import { fly } from "svelte/transition";
     import { cubicOut } from "svelte/easing";
   
+    // Props received by this component
     export let message = "";
     export let type = "info";
     export let timing = 3000;
-  
+    
+    // Initializing variables
     let show = false;
     let y = spring(-100, { stiffness: 0.1, damping: 0.3 });
-  
+    
+    // Running code when the component is mounted
     onMount(() => {
       show = true;
       y.set(0);
-  
+    
+      // Setting a timer to hide the notification after a certain duration
       const timer = setTimeout(() => {
-        y.set(-100);
-        show = false;
+      y.set(-100);
+      show = false;
       }, timing);
-  
+    
+      // Clearing the timer when the component is unmounted
       return () => clearTimeout(timer);
     });
-  
+    
+    // Generating the CSS classes for the notification
     const notificationClasses = `notification ${type}`;
   </script>
   

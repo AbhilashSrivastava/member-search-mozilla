@@ -1,3 +1,4 @@
+// For handling notifications
 const MESSAGING = {
  MESSAGE_TYPE: {
   SUCCESS: 'success',

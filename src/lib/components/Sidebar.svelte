@@ -2,7 +2,10 @@
 	import ShortlistedMember from './ShortlistedMember.svelte';
   import shortlist from '../stores/shortlist'
   
+  // This width is provided as a prop from the Layout container. handles the width of the sidebar
   export let width;
+  
+  // This variable will transform the shortlist store into consumable format for our component to render it properly
   let shortlistData = [];
 
 
@@ -15,6 +18,7 @@
       }
     })
   }
+  
 </script>
 
 <div class="sidebar" style:width={$width + 'px'}>

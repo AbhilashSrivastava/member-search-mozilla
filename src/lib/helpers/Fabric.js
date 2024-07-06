@@ -2,6 +2,12 @@ import * as fabric from 'fabric';
 import colors from '$lib/constants/colors'
 import origin from '$lib/constants/origin'
 
+/**
+ * Fabric Class will be our fabric library management class.
+ * All features of canvas (from fabric), which are needed are integrated here and encapsulated,
+ * to provide a basic interface for our application to use and not manage instance, mounting unmounting of events etc.
+ * outside of this class. 
+ */
 export class Fabric {
     /**
      * @type {{ group: fabric.Group; member: any; }[]}
@@ -47,6 +53,10 @@ export class Fabric {
         })
 
     }
+    /**
+     * 
+     * @returns instance of fabric class
+     */
     getInstance() {
         return this.canvasInstance
     }
@@ -56,6 +66,9 @@ export class Fabric {
     setZoomPan(isZoomPanEnabled) {
         this.isZoomPanSettingEnabled = isZoomPanEnabled
     }
+    /**
+     * clears canvas instance
+     */
     clearInstance() {
         this.canvasInstance.clear()
     }
@@ -63,40 +76,36 @@ export class Fabric {
      * @param {any[]} allMembers
      * @param {any[]} allMembersImageData
      */
+
+    //########################## CREATOR METHODS ###########################################//    
+    /**
+     * Renders all members on the canvas.
+     * 
+     * @param {Array} allMembers - An array of all members to be rendered.
+     * @param {Array} allMembersImageData - An array of image data for all members.
+     */
     renderAllMembers(allMembers, allMembersImageData) {
+        // unmount previosly set events first & empty the groupMemberList
         this.unmountBlurHandler()
         this.unmountAnimation()
         this.unmountClickHandlers()
         this.unmountZoomPanHandler()
         this.groupMemberList = []
+
+        // recreate the members cards for canvas setup
         allMembers.forEach((member, index) => {
             const memberImageData = allMembersImageData.find(data => data.user === member.id)
             this.createMember(member, index, memberImageData, allMembers)
         })
+        // mount parent level events
         this.mountBlurHandler()
         if (this.isZoomPanSettingEnabled) {
             this.mountZoomPanHandler()
         }
+        // eventually render all objects
         this.canvasInstance.renderAll()
     }
-    unmount() {
-        this.unmountAnimation()
-        this.unmountClickHandlers()
-        this.unmountZoomPanHandler()
-        this.unmountBlurHandler()
-        this.clearInstance()
-        this.canvasInstance.destroy()
-    }
-    /**
-     * @param {fabric.BasicTransformEvent<fabric.TPointerEvent> & { target: fabric.FabricObject; }} options
-     */
-    selectedBlurHandler(options) {
-        options.target.setCoords();
-        this.canvasInstance.forEachObject(function(group) {
-          if (group === options.target) return;
-          group.set('opacity' , options.target.intersectsWithObject(group) ? 0.3 : 1);
-        });
-    }
+
     /**
      * @param {any} member
      * @param {number} index
@@ -170,6 +179,32 @@ export class Fabric {
             yPlacement
         )
     }
+    
+    //########################## EVENT HANDLERS (MOUNT & UNMOUNT) ##########################################//
+    
+    /**
+    * this exposed method unmounts all events and handlers from the canvas and objects, which can 
+    * be used by the client to destroy and unmount everything related to this class.
+    */
+    unmount() {
+        this.unmountAnimation()
+        this.unmountClickHandlers()
+        this.unmountZoomPanHandler()
+        this.unmountBlurHandler()
+        this.clearInstance()
+        this.canvasInstance.destroy()
+    }
+    /**
+     * @param {fabric.BasicTransformEvent<fabric.TPointerEvent> & { target: fabric.FabricObject; }} options
+     */
+    selectedBlurHandler(options) {
+        options.target.setCoords();
+        this.canvasInstance.forEachObject(function(group) {
+          if (group === options.target) return;
+          group.set('opacity' , options.target.intersectsWithObject(group) ? 0.3 : 1);
+        });
+    }
+    
     mountBlurHandler(){
         this.canvasInstance.on({
             'object:moving': (options) => this.selectedBlurHandler(options),
@@ -274,7 +309,7 @@ export class Fabric {
           }
     
         });
-      }
+    }
     
     unmountZoomPanHandler() {
         this.canvasInstance.off('mouse:down', (event) => {
@@ -321,6 +356,8 @@ export class Fabric {
     
         });
       }
+    
+    //#################################### INTERNAL METHODS ############################################//
     /**
      * @param {string[]} currentColorSet
      * @param {number} top
