@@ -12,6 +12,9 @@
   import members from '../lib/stores/members'
   import messaging from '$lib/constants/messaging'
   import { cubicOut } from 'svelte/easing';
+  import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
+  injectSpeedInsights();
 
   /**
    * Following variables(message, messageType & notificationTimeout) handle notification component for the page
